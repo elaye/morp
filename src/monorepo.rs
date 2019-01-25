@@ -51,7 +51,7 @@ impl Monorepo {
     }
 
     fn load_package(path: &PathBuf) -> Result<PackageJson, MonorepoError> {
-        let filepath = dbg!(path.join("package.json"));
+        let filepath = path.join("package.json");
 
         let json_file = File::open(filepath).map_err(MonorepoError::PackageJsonRead)?;
 
