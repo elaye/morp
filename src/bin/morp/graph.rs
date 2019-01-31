@@ -39,7 +39,7 @@ pub fn get_args(name: &str) -> clap::App {
 pub fn run(args: &clap::ArgMatches) -> Result<(), Error> {
     let options = Options::from(args);
 
-    let path = options.path.unwrap_or(PathBuf::from("./"));
+    let path = options.path.unwrap_or_else(|| PathBuf::from("./"));
 
     let monorepo = Monorepo::load(&path).map_err(Error::Monorepo)?;
 

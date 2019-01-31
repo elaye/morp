@@ -1,25 +1,19 @@
 use clap;
-use std::iter::Flatten;
-use std::path::Path;
 use git2::{self, BranchType, DiffOptions, Repository};
+use morp::monorepo::{self, Monorepo};
+use petgraph::{
+    algo,
+    graphmap::DiGraphMap,
+    Direction,
+};
 use regex::Regex;
 use std::collections::HashSet;
+use std::path::Path;
 use std::path::PathBuf;
-use petgraph::{
-    Direction,
-    Directed,
-    algo,
-    visit::{Visitable, Walker, Topo},
-    graphmap::{
-        DiGraphMap,
-        NeighborsDirected
-    }
-};
-use morp::monorepo::{self, Monorepo};
 
 #[derive(Debug)]
 pub enum Error {
-    Monorepo(monorepo::MonorepoError)
+    Monorepo(monorepo::MonorepoError),
 }
 
 #[derive(Debug)]
@@ -60,7 +54,7 @@ pub fn get_args(name: &str) -> clap::App {
 pub fn run(args: &clap::ArgMatches) -> Result<(), Error> {
     let options = Options::from(args);
 
-    let path = options.path.unwrap_or(PathBuf::from("./"));
+    let path = options.path.unwrap_or_else(|| PathBuf::from("./"));
 
     let branch_name = "develop";
 
@@ -74,7 +68,7 @@ pub fn run(args: &clap::ArgMatches) -> Result<(), Error> {
 
     let changed_dep_packages = get_changed_dep_packages(changed_packages, &graph);
 
-    let prefix = options.prefix.unwrap_or(String::from(""));
+    let prefix = options.prefix.unwrap_or_else(|| String::from(""));
 
     changed_dep_packages.iter().for_each(|p| {
         println!("{}{}", prefix, p);
@@ -150,16 +144,17 @@ fn get_changed_packages(changed_files: Vec<Option<PathBuf>>) -> HashSet<String> 
                 .captures(path.to_str().unwrap())
                 // If a change is not in a package, it's at the root of the repo
                 .map_or(Some(String::from("root")), |caps| {
-                    caps.get(1).map(|cap| {
-                        String::from(cap.as_str())
-                    })
+                    caps.get(1).map(|cap| String::from(cap.as_str()))
                 })
         })
         .collect()
 }
 
 // TODO: Fix difference in names between package dir and name in package.json
-fn get_changed_dep_packages(changed_packages: HashSet<String>, graph: &DiGraphMap<&str, f32>) -> HashSet<String> {
+fn get_changed_dep_packages(
+    changed_packages: HashSet<String>,
+    graph: &DiGraphMap<&str, f32>,
+) -> HashSet<String> {
     assert!(!algo::is_cyclic_directed(graph));
 
     let mut packages = HashSet::new();
@@ -172,7 +167,9 @@ fn get_changed_dep_packages(changed_packages: HashSet<String>, graph: &DiGraphMa
         while !tovisit.is_empty() {
             let next = tovisit.pop().unwrap();
             packages.insert(String::from(next));
-            let mut nghbrs: Vec<&str> = graph.neighbors_directed(&next, Direction::Incoming).collect();
+            let mut nghbrs: Vec<&str> = graph
+                .neighbors_directed(&next, Direction::Incoming)
+                .collect();
             tovisit.append(&mut nghbrs);
         }
     });

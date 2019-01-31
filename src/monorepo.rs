@@ -84,9 +84,10 @@ impl Monorepo {
                 }
             });
 
-        match algo::is_cyclic_directed(&graph) {
-            true => Err(MonorepoError::CyclicDependencies),
-            false => Ok(graph)
+        if algo::is_cyclic_directed(&graph) {
+            Err(MonorepoError::CyclicDependencies)
+        } else {
+            Ok(graph)
         }
     }
 }
