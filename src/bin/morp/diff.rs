@@ -25,12 +25,14 @@ pub enum Error {
 #[derive(Debug)]
 pub struct Options {
     path: Option<PathBuf>,
+    prefix: Option<String>,
 }
 
 impl From<&clap::ArgMatches<'_>> for Options {
     fn from(args: &clap::ArgMatches) -> Self {
         Options {
             path: args.value_of("path").map(PathBuf::from),
+            prefix: args.value_of("prefix").map(String::from),
         }
     }
 }
@@ -42,9 +44,16 @@ pub fn get_args(name: &str) -> clap::App {
         .about("Get list of changed packages")
         .arg(
             clap::Arg::with_name("path")
+                .long("path")
                 .short("p")
                 .takes_value(true)
                 .help("Monorepo path"),
+        )
+        .arg(
+            clap::Arg::with_name("prefix")
+                .long("prefix")
+                .takes_value(true)
+                .help("Prefix added to changed packages output"),
         )
 }
 
@@ -65,8 +74,10 @@ pub fn run(args: &clap::ArgMatches) -> Result<(), Error> {
 
     let changed_dep_packages = get_changed_dep_packages(changed_packages, &graph);
 
+    let prefix = options.prefix.unwrap_or(String::from(""));
+
     changed_dep_packages.iter().for_each(|p| {
-        println!("{}", p);
+        println!("{}{}", prefix, p);
     });
 
     Ok(())
