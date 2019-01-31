@@ -3,7 +3,7 @@ use std::fs::{self, DirEntry, File};
 use std::io;
 use std::path::{Path, PathBuf};
 
-use petgraph::graphmap::DiGraphMap;
+use petgraph::{algo, graphmap::DiGraphMap};
 use serde_json;
 
 pub struct Monorepo {
@@ -19,6 +19,7 @@ pub enum MonorepoError {
         error: serde_json::Error,
         path: PathBuf,
     },
+    CyclicDependencies,
 }
 
 #[derive(Debug, Deserialize)]
@@ -63,7 +64,7 @@ impl Monorepo {
         })
     }
 
-    pub fn get_deps_graph(&self) -> DiGraphMap<&str, f32> {
+    pub fn get_deps_graph(&self) -> Result<DiGraphMap<&str, f32>, MonorepoError> {
         let mut graph = DiGraphMap::new();
 
         self.packages.iter().for_each(|package| {
@@ -83,6 +84,9 @@ impl Monorepo {
                 }
             });
 
-        graph
+        match algo::is_cyclic_directed(&graph) {
+            true => Err(MonorepoError::CyclicDependencies),
+            false => Ok(graph)
+        }
     }
 }
