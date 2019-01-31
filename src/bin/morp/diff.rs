@@ -148,8 +148,12 @@ fn get_changed_packages(changed_files: Vec<Option<PathBuf>>) -> HashSet<String> 
         .filter_map(|path| {
             package_re
                 .captures(path.to_str().unwrap())
-                .and_then(|caps| caps.get(1))
-                .map(|cap| String::from(cap.as_str()))
+                // If a change is not in a package, it's at the root of the repo
+                .map_or(Some(String::from("root")), |caps| {
+                    caps.get(1).map(|cap| {
+                        String::from(cap.as_str())
+                    })
+                })
         })
         .collect()
 }
