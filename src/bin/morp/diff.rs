@@ -20,6 +20,7 @@ pub enum Error {
 pub struct Options {
     path: Option<PathBuf>,
     prefix: Option<String>,
+    branch: Option<String>,
 }
 
 impl From<&clap::ArgMatches<'_>> for Options {
@@ -27,6 +28,7 @@ impl From<&clap::ArgMatches<'_>> for Options {
         Options {
             path: args.value_of("path").map(PathBuf::from),
             prefix: args.value_of("prefix").map(String::from),
+            branch: args.value_of("branch").map(String::from),
         }
     }
 }
@@ -44,6 +46,13 @@ pub fn get_args(name: &str) -> clap::App {
                 .help("Monorepo path"),
         )
         .arg(
+            clap::Arg::with_name("branch")
+                .long("branch")
+                .short("b")
+                .takes_value(true)
+                .help("Branch to compare changes with.")
+        )
+        .arg(
             clap::Arg::with_name("prefix")
                 .long("prefix")
                 .takes_value(true)
@@ -56,7 +65,7 @@ pub fn run(args: &clap::ArgMatches) -> Result<(), Error> {
 
     let path = options.path.unwrap_or_else(|| PathBuf::from("./"));
 
-    let branch_name = "develop";
+    let branch_name = options.branch.unwrap_or_else(|| PathBuf::from("develop");
 
     let changed_files = get_changed_files(&path, branch_name);
 
