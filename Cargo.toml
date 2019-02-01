@@ -3,6 +3,13 @@ name = "morp"
 version = "0.1.0"
 authors = ["Elie Genard <elaye.github.io@gmail.com>"]
 edition = "2018"
+description = "Utilities for javascript monorepos"
+homepage = "https://github.com/elaye/morp"
+repository = "https://github.com/elaye/morp"
+license = "MIT"
+readme = "README.md"
+keywords = ["monorepo", "javascript", "utilities"]
+categories = ["command-line-utilities", "development-tools"]
 
 [dependencies]
 serde = "^1.0.0"
