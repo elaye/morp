@@ -2,7 +2,6 @@
 name = "morp"
 version = "0.1.0"
 authors = ["Elie Genard <elie@lepermislibre.fr>"]
-# autobins = false
 edition = "2018"
 
 [dependencies]
@@ -13,7 +12,3 @@ clap = "^2.32.0"
 petgraph = "0.4.13"
 git2 = "0.8.0"
 regex = "1.1.0"
-
-# [[bin]]
-# name = "morp"
-# path = "src/bin/morp/main.rs"
