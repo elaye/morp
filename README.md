@@ -9,7 +9,7 @@ Installation
  1. Install [rustup](https://rustup.rs/) to have a working rust environment.
  2. Run `cargo install morp`
 
-You may need to add the Cargo bins install directory to your $PATH to be able to run `morp`.
+You may need to add the Cargo bins install directory to your `$PATH` to be able to run `morp`.
 
 Prerequisites
 -------------
