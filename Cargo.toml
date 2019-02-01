@@ -1,7 +1,7 @@
 [package]
 name = "morp"
 version = "0.1.0"
-authors = ["Elie Genard <elie@lepermislibre.fr>"]
+authors = ["Elie Genard <elaye.github.io@gmail.com>"]
 edition = "2018"
 
 [dependencies]
