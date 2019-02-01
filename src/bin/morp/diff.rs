@@ -65,9 +65,9 @@ pub fn run(args: &clap::ArgMatches) -> Result<(), Error> {
 
     let path = options.path.unwrap_or_else(|| PathBuf::from("./"));
 
-    let branch_name = options.branch.unwrap_or_else(|| PathBuf::from("develop");
+    let branch_name = options.branch.unwrap_or_else(|| String::from("develop"));
 
-    let changed_files = get_changed_files(&path, branch_name);
+    let changed_files = get_changed_files(&path, &branch_name);
 
     let changed_packages = get_changed_packages(changed_files);
 
