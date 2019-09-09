@@ -54,6 +54,8 @@ This can be useful for CI purposes, if you want to trigger jobs depending on cha
 This command works by first looking for a common ancestor between `HEAD` and the branch you specified (or `develop` by default).
 Once we have this common ancestor (`ca`), we check which packages changed between `ca` and `HEAD` and the packages depending on these.
 
+If there are changes outside of the monorepo packages, the `root` keyword will be output.
+
 #### options
 
 `--path -p` path of the monorepo
