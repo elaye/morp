@@ -64,3 +64,8 @@ If there are changes outside of the monorepo packages, the `root` keyword will b
 
 `--prefix` add a prefix to each package in the packages output
 
+
+Caveat
+------
+
+If you have a directory in the `packages` directory that doesn't have a `package.json` file, `morp` won't be able to work correctly.
